@@ -2,7 +2,7 @@
 
 Self-educational RAG project: a vector database of Leo Tolstoy's works wired to a tiny talkative model, so you can chat with a "cyber Tolstoy" in his vocabulary.
 
-> Status: Phase 0 implemented (skeleton repo, `/health` green, models smoke-tested). Build follows `docs/design-docs/0005` → `0012` in order.
+> Status: Phase 1 implemented (22-vol RU corpus ingested, `data/manifest.json` built, 2.43M work words). Build follows `docs/design-docs/0005` → `0012` in order.
 
 ## What is this?
 
@@ -28,4 +28,4 @@ Local-first, free, explainable. Every answer should cite the passages it came fr
 
 ## Next step
 
- Read the docs in order above, then build per `docs/design-docs/0005-implementation-plan-overview.md` (Phase 0 done — next: Phase 1 corpus ingest).
+ Read the docs in order above, then build per `docs/design-docs/0005-implementation-plan-overview.md` (Phases 0–1 done — next: Phase 2 baseline retrieval).

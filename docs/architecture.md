@@ -62,6 +62,7 @@ New chains are added as config + prompt variants, not rewrites.
   ### 6. Interfaces
   - **Python** owns everything data/ML: ingest, store, chains, FastAPI (`/search`, `/chat`, `/health`). `POST /chat` accepts `{ question, lang, chain, collection? }` (`lang` defaults to `ru`, `collection` defaults to `tolstoy-ru` — the only v1 collection; `tolstoy-en` requests return "not built yet"); `POST /search` accepts `{ query, collection, top_k, filter }`.
   - **Node/TypeScript** owns the talkative surface: a CLI chat client calling the API, with `--lang ru|en` (default `ru`) and rendering of `answer_lang` plus Russian sources under translated answers. Keeps both languages in the repo with a clean boundary (HTTP/JSON), so the frontend can later become a web UI without touching RAG logic.
+  - **Deploy posture:** the API is stateless (config + client handles only; all corpus state in the store backend) and every deployment-varying value comes from env — the same `/search` + `/chat` contracts serve the CLI now and a web UI or online service later with no redesign (constraints: `design-docs/0014`).
 
  ## Data flow (chat)
 

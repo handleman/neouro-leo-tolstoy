@@ -29,6 +29,7 @@ Execute in this exact order.
 ### Step 4 — Future decisions (documented, not built)
 
 - Web UI vs LangChain migration: decision inputs (what hurts now, what a framework would/wouldn't fix), recorded in the lessons note as a proposal — no code.
+- Service deployment: build-or-defer call on the future online service (hosting, edge auth, packaging) — v1 was kept compatible per 0014, so this decides timing, not redesign. Recorded in the lessons note — no code.
 - Optional English corpus (`tolstoy-en`, decision 0004): build-or-close call. If build: Gutenberg download script, MiniLM model, `tolstoy-en` collection, manifest EN fields, comparison report vs generator translation. If close: record RU-only-forever with rationale. Either way the decision is written down.
 
 ### Tests / gates

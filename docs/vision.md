@@ -36,7 +36,7 @@ Instead of abstract tutorials, every concept (chunking, embeddings, retrieval, p
 
 ## Non-goals (for now)
 
- - No production hosting, auth, or scaling.
+ - No production hosting, auth, or scaling — but v1 stays deploy-compatible per `design-docs/0014` (env-only config, stateless API, swappable store/generator, rebuildable index), so a future online service needs no redesign.
  - No fine-tuning of the base model (prompt + retrieval only at first).
  - Russian-only corpus in v1: the 22-volume local EPUB set (`tolstoy-ru`). English Gutenberg translations are deferred to Phase 6 as an optional comparison collection (see `design-docs/0004`) — not built in Phases 1–2. Chat answers in Russian by default with on-demand English translation of the Russian-grounded answer — never English-first retrieval.
  - No copyrighted translations (e.g. modern Pevear/Volokhonsky) — public domain only.

@@ -32,7 +32,8 @@ Node never embeds or retrieves — it only renders answers + citations.
 - **pgvector / Qdrant / Pinecone** — more production-like, but heavier ops or hosted keys. Revisit if Chroma limits appear. Abstraction (a `Store` interface) keeps this swap cheap.
 - **LangChain / LlamaIndex** — great later for the chains zoo, but v1 is hand-rolled so each RAG step is visible and learnable. Adopt once naive RAG works.
 - **OpenAI / hosted embeddings** — better quality, but costs money and hides mechanics. Local-first keeps the project reproducible for free.
-- **Fine-tuning** — out of scope until RAG + prompting plateau. Retrieval gives knowledge; fine-tune would give style, but prompting gets us 80% for study purposes.
+ - **Fine-tuning** — out of scope until RAG + prompting plateau. Retrieval gives knowledge; fine-tune would give style, but prompting gets us 80% for study purposes.
+ - **Service deployment (hosting, auth, containers)** — not built in v1, but v1 stays deploy-compatible per `design-docs/0014` (env-only config, stateless API, `Store`/`generate` interfaces, rebuildable index). No deploy work now; no redesign later.
 
  ## Defaults to start with
 

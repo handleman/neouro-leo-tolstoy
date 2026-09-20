@@ -1,6 +1,6 @@
 # 0002: EPUB ingest support (Russian 22-volume set)
 
-- Status: Draft
+- Status: Draft (partially superseded by 0004: the Gutenberg `.txt` / `tolstoy-en` clauses below — §§1, 6-manifest-EN-fields, Consequences — are deferred to Phase 6; the EPUB contract itself stands)
 - Date: 2026-09-20
 - Author: software-architect skill
 

@@ -23,7 +23,7 @@ Execute in this exact order.
 
 ### Step 3 — Lessons-learned note
 
-- Write `docs/design-docs/0013-lessons-learned.md` (ADR-style: what we tried per phase, what worked/failed and why,_builder's judgment): hand-rolled vs framework verdict, chunking/embedding takeaways, tiny-model limits, bilingual-chat findings, what to do differently.
+- Write `docs/design-docs/0013-lessons-learned.md` (ADR-style: what we tried per phase, what worked/failed and why, builder's judgment): hand-rolled vs framework verdict, chunking/embedding takeaways, tiny-model limits, bilingual-chat findings, what to do differently.
 - This is the project's real output (vision: "the learning artifact"); each phase journal feeds it.
 
 ### Step 4 — Future decisions (documented, not built)

@@ -27,7 +27,7 @@ Build in this exact order.
 
 ### Step 3 — Question bank seed `evals/question_bank.json`
 
-- 10 questions, each `{ id, ru, en, expected_work, notes }` (expected source = volume/work in the Russian corpus; roadmap seed bank is the starting content).
+- 10 questions, each `{ id, ru, en, expected: { volume, work }, notes }` (expected source = volume/work in the Russian corpus; roadmap seed bank is the starting content; same schema Phase 5 extends to ~20).
 - Committed; grows to ~20 with expected chunk-level sources in Phase 5.
 
 ### Step 4 — Comparison runner (CLI `python -m tolstoy.compare`)

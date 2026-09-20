@@ -53,6 +53,8 @@ neouro-leo-tolstoy/
       run.py score.py          # 0011: eval harness
     index.py search.py         # 0008: CLIs (index corpus, REPL search)
     clean.py manifest.py       # 0007: CLIs (thin wrappers over ingest/)
+    compare.py                 # 0010: CLI (chain comparison runner)
+    evaluate.py                # 0011: CLI (eval harness runner)
   web/                         # 0009: npm workspace (package.json, tsconfig, src/chat.ts)
   tests/                       # mirror per phase: test_config, test_epub, test_clean,
                                # test_manifest, test_chunk, test_store, test_api,

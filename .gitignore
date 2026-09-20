@@ -217,3 +217,8 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 data/raw/
+data/clean/
+
+# Project-local (cyber-tolstoy): vector store, node deps
+.chroma/
+web/node_modules/

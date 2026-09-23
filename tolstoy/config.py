@@ -59,6 +59,7 @@ class Settings:
     top_k: int = field(default_factory=lambda: _get_int("TOLSTOY_TOP_K", 4))
     chunk_size: int = field(default_factory=lambda: _get_int("TOLSTOY_CHUNK_SIZE", 900))
     chunk_overlap: int = field(default_factory=lambda: _get_int("TOLSTOY_CHUNK_OVERLAP", 150))
+    chunk_min_chars: int = field(default_factory=lambda: _get_int("TOLSTOY_CHUNK_MIN_CHARS", 50))
     score_threshold: float = field(
         default_factory=lambda: _get_float("TOLSTOY_SCORE_THRESHOLD", 0.0)
     )
@@ -87,6 +88,7 @@ KNOWN_ENV_KEYS = (
     "TOLSTOY_TOP_K",
     "TOLSTOY_CHUNK_SIZE",
     "TOLSTOY_CHUNK_OVERLAP",
+    "TOLSTOY_CHUNK_MIN_CHARS",
     "TOLSTOY_SCORE_THRESHOLD",
     "TOLSTOY_RERANK_BROAD_K",
     "TOLSTOY_DEFAULT_LANG",

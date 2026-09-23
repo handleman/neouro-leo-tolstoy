@@ -1,5 +1,7 @@
 # Roadmap
 
+Live phase status: `progress/STATUS.md` (this file stays static; the dashboard moves).
+
 Phased so each step teaches one idea and ends with something runnable. No code exists yet — phases are the build order when scaffolding starts.
 
 ## Phase 0 — Dev environment

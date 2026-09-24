@@ -24,3 +24,14 @@ def test_comparison_report_covers_all_cells() -> None:
     assert text.count("**en**") == 3 * len(bank)
     assert "Author notes" in text
     assert "_TBD" not in text, "author notes must be filled in, not placeholders"
+
+
+def test_fixes_report_covers_all_cells_plus_delta() -> None:
+    bank = json.loads(BANK.read_text(encoding="utf-8"))["questions"]
+    report = REPO_ROOT / "evals" / "reports" / "phase-4b-fixes-comparison.md"
+    text = report.read_text(encoding="utf-8")
+    for item in bank:
+        assert f"## {item['id']}" in text
+    for chain in ("naive", "persona", "cite-or-refuse"):
+        assert text.count(f"### {chain}") == len(bank)
+    assert "## Delta vs phase-4-comparison.md" in text

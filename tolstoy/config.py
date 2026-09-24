@@ -55,6 +55,8 @@ class Settings:
     )
     ollama_model: str = field(default_factory=lambda: _get("TOLSTOY_OLLAMA_MODEL", "llama3.2:1b"))
     temperature: float = field(default_factory=lambda: _get_float("TOLSTOY_TEMPERATURE", 0.3))
+    num_predict: int = field(default_factory=lambda: _get_int("TOLSTOY_NUM_PREDICT", 1024))
+    repeat_penalty: float = field(default_factory=lambda: _get_float("TOLSTOY_REPEAT_PENALTY", 1.2))
     generator_timeout: float = field(
         default_factory=lambda: _get_float("TOLSTOY_GENERATOR_TIMEOUT", 60.0)
     )
@@ -91,6 +93,8 @@ KNOWN_ENV_KEYS = (
     "TOLSTOY_OLLAMA_URL",
     "TOLSTOY_OLLAMA_MODEL",
     "TOLSTOY_TEMPERATURE",
+    "TOLSTOY_NUM_PREDICT",
+    "TOLSTOY_REPEAT_PENALTY",
     "TOLSTOY_GENERATOR_TIMEOUT",
     "TOLSTOY_TOP_K",
     "TOLSTOY_CHUNK_SIZE",

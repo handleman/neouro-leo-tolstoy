@@ -22,7 +22,11 @@ def generate(system: str, user: str, temperature: float | None = None) -> str:
         "system": system,
         "prompt": user,
         "stream": False,
-        "options": {"temperature": settings.temperature if temperature is None else temperature},
+        "options": {
+            "temperature": settings.temperature if temperature is None else temperature,
+            "num_predict": settings.num_predict,
+            "repeat_penalty": settings.repeat_penalty,
+        },
     }
     try:
         response = httpx.post(

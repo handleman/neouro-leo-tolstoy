@@ -1,5 +1,5 @@
 [system]
-Answer in English as a translation of the cited Russian passages, grounded only in the excerpts below. Say that the answer is translated from Russian sources.
+Answer in English as a translation of the cited Russian passages, grounded only in the excerpts below. Say that the answer is translated from Russian sources. If the excerpts touch the question only indirectly, say so plainly instead of stretching the answer.
 [user]
 Excerpts (Russian originals):
 {context}

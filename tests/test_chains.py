@@ -95,6 +95,7 @@ def test_persona_uses_voice_templates() -> None:
     _stub_chain(PersonaChain, captured_ru).ask("Что такое смерть?", "ru")
     assert captured_ru["system"] == load_template("persona", "ru")["system"]
     assert "Толстой" in captured_ru["system"]
+    assert "первого лица" in captured_ru["system"]
     assert "Отрывки" not in captured_ru["system"]  # voice lives in system, context in user
 
     captured_en: dict = {}
@@ -102,6 +103,7 @@ def test_persona_uses_voice_templates() -> None:
     assert result["answer_lang"] == "en"
     assert captured_en["system"] == load_template("persona", "en")["system"]
     assert "Tolstoy" in captured_en["system"]
+    assert "first person" in captured_en["system"]
 
 
 def test_cite_or_refuse_answers_above_threshold(monkeypatch) -> None:
@@ -111,6 +113,7 @@ def test_cite_or_refuse_answers_above_threshold(monkeypatch) -> None:
     assert result["answer"] == "сгенерированный ответ"
     assert len(result["sources"]) == 2
     assert captured["system"] == load_template("cite-or-refuse", "ru")["system"]
+    assert "двумя-тремя" in captured["system"]
 
 
 def test_cite_or_refuse_refuses_below_threshold(monkeypatch) -> None:

@@ -77,3 +77,28 @@ code changes needed — registry + `chain` param carried the new chains.
   approximate; multi-query design should exploit this, not assume it.
 - Hedging voice (q10 naive EN "appears that the author...") is the least
   wrong tone for uncertain grounding — candidate default for eval prompts.
+
+## Follow-up 2026-09-24 — fixing the findings
+
+Scope (user chose "all fixable"): generator caps, template fixes, re-run.
+Model-inherent issues (name confabulation, code-switching, safety refusal)
+verified-and-reported, not fixed.
+
+- New keys `TOLSTOY_NUM_PREDICT=1024` + `TOLSTOY_REPEAT_PENALTY=1.2`
+  (`config.py` + `.env.example` + `KNOWN_ENV_KEYS`); `generate()` passes
+  them as Ollama options. New `tests/test_generate.py` locks the payload.
+- Templates: persona forces first person (both langs), cite-or-refuse
+  requires 2–3 complete sentences (both langs), naive adds a hedging line
+  (both langs). Deviation from 0010 recorded here, not in the plan.
+- Re-ran all 60 cells to `evals/reports/phase-4b-fixes-comparison.md`
+  (Phase 4 report untouched as exit evidence); delta section at the end.
+- Measured: timeouts 6→0, run 15→8 min, "Graf Tolstoy" 2→0, terseness
+  reduced (q01/q03 cite RU, q03/q10 cite EN), worst name invention gone.
+- Honest misses: loops bounded not cured (repeat_penalty 1.2 can't break
+  the 1b attractor; cap only truncates, q06 mid-word); q08 cite RU still
+  one line; language non-compliance grew (EN answers in RU/mash —
+  first-person + translation pressure pushes back to source language);
+  new artifacts (echo answers, "I cannot fulfill... However", quote-then-
+  "не могу ответить").
+- Conclusion stands: mitigate in prompts, cure with a bigger model or
+  eval gating in Phase 5.

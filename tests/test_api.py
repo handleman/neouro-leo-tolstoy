@@ -110,3 +110,92 @@ def test_search_top_k_clamped(monkeypatch) -> None:
     _patch_retrieval(monkeypatch, captured)
     client.post("/search", json={"query": "смерть", "top_k": 99})
     assert captured["top_k"] == 20
+
+
+_CHAT_RESULT = {
+    "answer": "Смерть есть пробуждение.",
+    "sources": [
+        {
+            "chunk_id": "ru-vol12-war-1-0",
+            "volume": 12,
+            "work": "Смерть Ивана Ильича",
+            "chapter": "I",
+            "score": 0.77,
+        }
+    ],
+    "answer_lang": "ru",
+}
+
+
+def _patch_chat(monkeypatch, result: dict | None = None, exc: Exception | None = None):
+    def fake_ask(chain_name, question, lang, collection):
+        if exc is not None:
+            raise exc
+        body = dict(result or _CHAT_RESULT)
+        body["answer_lang"] = lang
+        return body
+
+    monkeypatch.setattr(app_module, "run_chat_ask", fake_ask)
+
+
+def test_chat_happy_path(monkeypatch) -> None:
+    _patch_chat(monkeypatch)
+    response = client.post("/chat", json={"question": "Что такое смерть?"})
+    assert response.status_code == 200
+    body = response.json()
+    assert body["answer"] == "Смерть есть пробуждение."
+    assert body["answer_lang"] == "ru"
+    assert body["chain"] == "naive"
+    assert body["sources"][0]["chunk_id"] == "ru-vol12-war-1-0"
+
+
+def test_chat_answer_lang_echo(monkeypatch) -> None:
+    _patch_chat(monkeypatch)
+    response = client.post("/chat", json={"question": "What is death?", "lang": "en"})
+    assert response.status_code == 200
+    assert response.json()["answer_lang"] == "en"
+
+
+def test_chat_empty_question_is_422(monkeypatch) -> None:
+    _patch_chat(monkeypatch)
+    assert client.post("/chat", json={"question": "   "}).status_code == 422
+
+
+def test_chat_bad_lang_is_422(monkeypatch) -> None:
+    _patch_chat(monkeypatch)
+    assert client.post("/chat", json={"question": "смерть", "lang": "de"}).status_code == 422
+
+
+def test_chat_unknown_chain_is_422(monkeypatch) -> None:
+    _patch_chat(monkeypatch)
+    response = client.post("/chat", json={"question": "смерть", "chain": "nope"})
+    assert response.status_code == 422
+    assert "unknown chain" in response.json()["detail"]
+
+
+def test_chat_unknown_collection_is_404(monkeypatch) -> None:
+    _patch_chat(monkeypatch)
+    response = client.post("/chat", json={"question": "смерть", "collection": "tolstoy-en"})
+    assert response.status_code == 404
+    assert "not built yet" in response.json()["detail"]
+
+
+def test_chat_generator_down_is_503(monkeypatch) -> None:
+    from tolstoy.generate.ollama import GeneratorUnavailable
+
+    _patch_chat(monkeypatch, exc=GeneratorUnavailable("ollama down"))
+    response = client.post("/chat", json={"question": "смерть"})
+    assert response.status_code == 503
+
+
+def test_health_reports_ollama(monkeypatch) -> None:
+    import tolstoy.generate.ollama as ollama_module
+    import tolstoy.store.chroma as chroma_module
+
+    monkeypatch.setattr(chroma_module, "collection_count", lambda *a, **k: 26188)
+    monkeypatch.setattr(ollama_module, "is_reachable", lambda: True)
+    response = client.get("/health")
+    assert response.status_code == 200
+    body = response.json()
+    assert body["ollama_model"] == "llama3.2:1b"
+    assert body["ollama_reachable"] is True

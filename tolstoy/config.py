@@ -55,6 +55,9 @@ class Settings:
     )
     ollama_model: str = field(default_factory=lambda: _get("TOLSTOY_OLLAMA_MODEL", "llama3.2:1b"))
     temperature: float = field(default_factory=lambda: _get_float("TOLSTOY_TEMPERATURE", 0.3))
+    generator_timeout: float = field(
+        default_factory=lambda: _get_float("TOLSTOY_GENERATOR_TIMEOUT", 60.0)
+    )
     # Retrieval / chunking
     top_k: int = field(default_factory=lambda: _get_int("TOLSTOY_TOP_K", 4))
     chunk_size: int = field(default_factory=lambda: _get_int("TOLSTOY_CHUNK_SIZE", 900))
@@ -66,6 +69,9 @@ class Settings:
     rerank_broad_k: int = field(default_factory=lambda: _get_int("TOLSTOY_RERANK_BROAD_K", 12))
     # Chat language default (ru; en = translation of RU-grounded answer)
     default_lang: str = field(default_factory=lambda: _get("TOLSTOY_DEFAULT_LANG", "ru"))
+    chat_context_chars: int = field(
+        default_factory=lambda: _get_int("TOLSTOY_CHAT_CONTEXT_CHARS", 6000)
+    )
 
 
 def load_settings() -> Settings:
@@ -85,6 +91,7 @@ KNOWN_ENV_KEYS = (
     "TOLSTOY_OLLAMA_URL",
     "TOLSTOY_OLLAMA_MODEL",
     "TOLSTOY_TEMPERATURE",
+    "TOLSTOY_GENERATOR_TIMEOUT",
     "TOLSTOY_TOP_K",
     "TOLSTOY_CHUNK_SIZE",
     "TOLSTOY_CHUNK_OVERLAP",
@@ -92,4 +99,5 @@ KNOWN_ENV_KEYS = (
     "TOLSTOY_SCORE_THRESHOLD",
     "TOLSTOY_RERANK_BROAD_K",
     "TOLSTOY_DEFAULT_LANG",
+    "TOLSTOY_CHAT_CONTEXT_CHARS",
 )

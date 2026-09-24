@@ -20,6 +20,8 @@ def test_defaults_load_with_no_env(monkeypatch) -> None:
     assert settings.embed_model == "paraphrase-multilingual-MiniLM-L12-v2"
     assert settings.ollama_model == "llama3.2:1b"
     assert settings.temperature == 0.3
+    assert settings.generator_timeout == 60.0
+    assert settings.chat_context_chars == 6000
     assert settings.top_k == 4
     assert settings.chunk_size == 900
     assert settings.chunk_overlap == 150

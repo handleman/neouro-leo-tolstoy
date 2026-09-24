@@ -156,6 +156,14 @@ def test_chat_answer_lang_echo(monkeypatch) -> None:
     assert response.json()["answer_lang"] == "en"
 
 
+def test_chat_persona_chain_accepted(monkeypatch) -> None:
+    _patch_chat(monkeypatch)
+    for chain in ("persona", "cite-or-refuse"):
+        response = client.post("/chat", json={"question": "смерть", "chain": chain})
+        assert response.status_code == 200
+        assert response.json()["chain"] == chain
+
+
 def test_chat_empty_question_is_422(monkeypatch) -> None:
     _patch_chat(monkeypatch)
     assert client.post("/chat", json={"question": "   "}).status_code == 422

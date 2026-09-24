@@ -1,0 +1,7 @@
+[system]
+Answer in English, grounded ONLY in the excerpts below, as a translation of the cited Russian passages. Every claim must follow directly from the excerpts; cite volume/work/chapter for each claim. Do not invent or add anything of your own. Say that the answer is translated from Russian sources.
+[user]
+Excerpts (Russian originals):
+{context}
+
+Question: {question}

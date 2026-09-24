@@ -64,7 +64,7 @@ class Settings:
     chunk_overlap: int = field(default_factory=lambda: _get_int("TOLSTOY_CHUNK_OVERLAP", 150))
     chunk_min_chars: int = field(default_factory=lambda: _get_int("TOLSTOY_CHUNK_MIN_CHARS", 50))
     score_threshold: float = field(
-        default_factory=lambda: _get_float("TOLSTOY_SCORE_THRESHOLD", 0.0)
+        default_factory=lambda: _get_float("TOLSTOY_SCORE_THRESHOLD", 0.55)
     )
     rerank_broad_k: int = field(default_factory=lambda: _get_int("TOLSTOY_RERANK_BROAD_K", 12))
     # Chat language default (ru; en = translation of RU-grounded answer)

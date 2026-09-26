@@ -69,6 +69,18 @@ class Settings:
         default_factory=lambda: _get_float("TOLSTOY_SCORE_THRESHOLD", 0.55)
     )
     rerank_broad_k: int = field(default_factory=lambda: _get_int("TOLSTOY_RERANK_BROAD_K", 12))
+    rerank_final_k: int = field(default_factory=lambda: _get_int("TOLSTOY_RERANK_FINAL_K", 4))
+    rerank_model: str = field(
+        default_factory=lambda: _get(
+            "TOLSTOY_RERANK_MODEL", "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1"
+        )
+    )
+    rerank_batch: int = field(default_factory=lambda: _get_int("TOLSTOY_RERANK_BATCH", 32))
+    multiquery_variants: int = field(
+        default_factory=lambda: _get_int("TOLSTOY_MULTIQUERY_VARIANTS", 3)
+    )
+    multiquery_k: int = field(default_factory=lambda: _get_int("TOLSTOY_MULTIQUERY_K", 4))
+    rrf_k: int = field(default_factory=lambda: _get_int("TOLSTOY_RRF_K", 60))
     # Chat language default (ru; en = translation of RU-grounded answer)
     default_lang: str = field(default_factory=lambda: _get("TOLSTOY_DEFAULT_LANG", "ru"))
     chat_context_chars: int = field(
@@ -102,6 +114,12 @@ KNOWN_ENV_KEYS = (
     "TOLSTOY_CHUNK_MIN_CHARS",
     "TOLSTOY_SCORE_THRESHOLD",
     "TOLSTOY_RERANK_BROAD_K",
+    "TOLSTOY_RERANK_FINAL_K",
+    "TOLSTOY_RERANK_MODEL",
+    "TOLSTOY_RERANK_BATCH",
+    "TOLSTOY_MULTIQUERY_VARIANTS",
+    "TOLSTOY_MULTIQUERY_K",
+    "TOLSTOY_RRF_K",
     "TOLSTOY_DEFAULT_LANG",
     "TOLSTOY_CHAT_CONTEXT_CHARS",
 )

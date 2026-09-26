@@ -2,9 +2,11 @@
 
 from tolstoy.chains import CHAIN_REGISTRY
 from tolstoy.chains.cite_or_refuse import CiteOrRefuseChain
+from tolstoy.chains.multiquery import MultiQueryChain
 from tolstoy.chains.naive import NaiveChain
 from tolstoy.chains.persona import PersonaChain
 from tolstoy.chains.prompts import list_templates, load_template, render_prompt
+from tolstoy.chains.rerank import RerankChain
 
 _HITS = [
     {
@@ -42,11 +44,13 @@ def _stub_chain(cls, captured: dict, hits: list[dict] | None = None, **kwargs):
     )
 
 
-def test_registry_contains_exactly_three_chains() -> None:
-    assert set(CHAIN_REGISTRY) == {"naive", "persona", "cite-or-refuse"}
+def test_registry_contains_exactly_five_chains() -> None:
+    assert set(CHAIN_REGISTRY) == {"naive", "persona", "cite-or-refuse", "rerank", "multi-query"}
     assert CHAIN_REGISTRY["naive"] is NaiveChain
     assert CHAIN_REGISTRY["persona"] is PersonaChain
     assert CHAIN_REGISTRY["cite-or-refuse"] is CiteOrRefuseChain
+    assert CHAIN_REGISTRY["rerank"] is RerankChain
+    assert CHAIN_REGISTRY["multi-query"] is MultiQueryChain
 
 
 def test_all_templates_render_for_both_langs() -> None:

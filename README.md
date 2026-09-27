@@ -73,13 +73,25 @@ known limit, measured 3/6 probe refusals in Phase 5.
 
 ## Quickstart (fresh clone → chat)
 
-Prerequisites: Python 3.11+, Node 18+, Ollama running with
-`ollama pull llama3.2:1b`. The 22-volume RU EPUB corpus is gitignored, not
-cloned — place it at `data/raw/` first (see `docs/data-sources.md`).
+Prerequisites: Python 3.11+, Node 18+, GNU Make, Ollama running. The
+22-volume RU EPUB corpus is gitignored, not cloned — place it at `data/raw/`
+first (see `docs/data-sources.md`).
 
 ```bash
-python -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev]" && cp .env.example .env
+make setup     # venv, pip install, .env (never overwritten), Ollama model, npm install
+make chat      # corpus gate → index build (skipped if populated) → API + chat REPL
+```
+
+Variants: `make chat CHAT_LANG=en`, `make chat CHAT_CHAIN=persona`,
+`make reindex` (force rebuild), `make eval` (`EVAL_ARGS="--questions q01,q02"`
+to slice), `make test` (pytest + ruff + typecheck), bare `make` lists
+targets. Runner contract: `docs/design-docs/0015-local-runner.md`.
+
+Under the hood (fallback if Make is unavailable — same commands the
+targets wrap):
+
+```bash
+python -m venv .venv && .venv/bin/python -m pip install -e ".[dev]" && cp -n .env.example .env
 .venv/bin/python -m tolstoy.manifest build   # data/manifest.json
 .venv/bin/python -m tolstoy.clean --all          # data/clean/ (regenerable)
 .venv/bin/python -m tolstoy.index build --all # chunk → embed → .chroma/ (26,188 chunks)

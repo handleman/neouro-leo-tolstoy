@@ -1,4 +1,4 @@
-# Local runner (0015): fresh clone -> chat with Tolstoy.
+# Local runner (0015, 0016): fresh clone -> chat with Tolstoy.
 # Bare `make` prints help. Wraps the README quickstart commands; every
 # wrapped command keeps working standalone. No new dependencies (macOS/Linux).
 # NOTE: `CHAT_LANG`/`CHAT_CHAIN` (not LANG/CHAIN) — LANG is set by the shell.
@@ -10,8 +10,12 @@ API_LOG := /tmp/tolstoy-api.log
 CHAT_LANG ?= ru
 CHAT_CHAIN ?= rerank
 EVAL_ARGS ?=
+INDEX_TAG ?= index-tolstoy-ru-v1
+INDEX_URL := https://github.com/handleman/neouro-leo-tolstoy/releases/download/$(INDEX_TAG)
+EXPECTED_CHUNKS ?= 26188
+SHA_CMD := $(shell command -v sha256sum 2>/dev/null || echo "shasum -a 256")
 
-.PHONY: help setup check-corpus index reindex chat eval test
+.PHONY: help setup check-corpus fetch-index index reindex chat eval test
 
 help: ## Show this help (default target).
 	@grep -E '^[a-z-]+:.*?## ' $(MAKEFILE_LIST) | sed 's/:.*## / — /'
@@ -23,7 +27,7 @@ setup: ## Create venv, install deps, .env, Ollama model, web deps (idempotent).
 	test -f .env || cp .env.example .env
 	ollama show llama3.2:1b >/dev/null 2>&1 || ollama pull llama3.2:1b
 	cd web && npm install
-	@echo "setup done — place the 22 EPUBs in data/raw/ (see docs/data-sources.md), then: make chat"
+	@echo "setup done — then: make chat (downloads the prebuilt index unless data/raw/ holds your own EPUBs)"
 
 check-corpus: ## Fail fast when data/raw/ lacks the 22 EPUB volumes.
 	test -d data/raw || (echo "missing data/raw/ — see docs/data-sources.md" && exit 1)
@@ -31,9 +35,26 @@ check-corpus: ## Fail fast when data/raw/ lacks the 22 EPUB volumes.
 		(echo "data/raw/ needs the 22 RU EPUB volumes — see docs/data-sources.md" && exit 1)
 	@echo "corpus ok"
 
-index: check-corpus ## Build manifest/clean/.chroma unless already populated.
-	test -n "$$(ls -A .chroma 2>/dev/null)" && echo "index already populated — skipping (make reindex to rebuild)" || \
-		($(PY) -m tolstoy.manifest build && $(PY) -m tolstoy.clean --all && $(PY) -m tolstoy.index build --all)
+index: ## Local build if corpus present, else download the release (0016).
+	if test -n "$$(ls -A .chroma 2>/dev/null)"; then \
+		echo "index already populated — skipping (make reindex to rebuild)"; \
+	elif find data/raw -maxdepth 1 -name '*.epub' 2>/dev/null | grep -q .; then \
+		$(PY) -m tolstoy.manifest build && $(PY) -m tolstoy.clean --all && $(PY) -m tolstoy.index build --all; \
+	else \
+		$(MAKE) fetch-index; \
+	fi
+
+fetch-index: ## Download the prebuilt index release — no corpus needed (0016).
+	test -z "$$(ls -A .chroma 2>/dev/null)" || (echo ".chroma already populated — refusing to overwrite" && exit 1)
+	rm -rf .fetch-tmp && mkdir -p .fetch-tmp/store
+	curl -fsSL -o .fetch-tmp/tolstoy-ru-chroma.tar.gz $(INDEX_URL)/tolstoy-ru-chroma.tar.gz
+	curl -fsSL -o .fetch-tmp/tolstoy-ru-chroma.tar.gz.sha256 $(INDEX_URL)/tolstoy-ru-chroma.tar.gz.sha256
+	cd .fetch-tmp && $(SHA_CMD) -c tolstoy-ru-chroma.tar.gz.sha256
+	tar -xzf .fetch-tmp/tolstoy-ru-chroma.tar.gz -C .fetch-tmp/store
+	rm -rf .chroma && mv .fetch-tmp/store .chroma && rm -rf .fetch-tmp
+	$(PY) -m tolstoy.index stats | grep -q "$(EXPECTED_CHUNKS) chunks" || \
+		(echo "chunk-count mismatch — override INDEX_TAG/EXPECTED_CHUNKS together" && exit 1)
+	@echo "index $(INDEX_TAG) ready: $(EXPECTED_CHUNKS) chunks"
 
 reindex: check-corpus ## Force full rebuild (upserts are idempotent on chunk_id).
 	$(PY) -m tolstoy.manifest build && $(PY) -m tolstoy.clean --all && $(PY) -m tolstoy.index build --all

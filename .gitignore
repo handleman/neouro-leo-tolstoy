@@ -219,6 +219,7 @@ __marimo__/
 data/raw/
 data/clean/
 
-# Project-local (cyber-tolstoy): vector store, node deps
+# Project-local (cyber-tolstoy): vector store, node deps, fetch scratch
 .chroma/
+.fetch-tmp/
 web/node_modules/

@@ -19,6 +19,7 @@ Numbered proposals and ADRs. Stable product docs live in `docs/` root; everythin
  | 0013 | [Lessons learned — v1 retrospective](0013-lessons-learned.md) | Draft |
  | 0014 | [Deploy compatibility without deploying](0014-deploy-compatibility.md) | Draft |
  | 0015 | [Local runner — one-command setup and chat](0015-local-runner.md) | Draft |
+ | 0016 | [Index release — downloadable built store](0016-index-release.md) | Draft |
  | — | (_template — do not index_) | — |
 
 Rules: filename `NNNN-short-slug.md`, start from `_template.md`, update this table on every add.

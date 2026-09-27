@@ -71,21 +71,34 @@ Out-of-corpus gibberish is refused with no generator call (on the gated
 Fluent off-topic (e.g. smartphones) can still pass the 0.55 score gate —
 known limit, measured 3/6 probe refusals in Phase 5.
 
-## Quickstart (fresh clone → chat)
+## Quickstart (fresh clone → chat, no corpus needed)
 
-Prerequisites: Python 3.11+, Node 18+, GNU Make, Ollama running. The
-22-volume RU EPUB corpus is gitignored, not cloned — place it at `data/raw/`
-first (see `docs/data-sources.md`).
+Prerequisites: Python 3.11+, Node 18+, GNU Make, Ollama running. The chat
+runs on a prebuilt index downloaded from the
+[index-tolstoy-ru-v1 release](https://github.com/handleman/neouro-leo-tolstoy/releases/tag/index-tolstoy-ru-v1)
+(~215MB, SHA256-verified) — the 22-volume EPUB corpus is not required
+(design: `docs/design-docs/0016-index-release.md`).
 
 ```bash
 make setup     # venv, pip install, .env (never overwritten), Ollama model, npm install
-make chat      # corpus gate → index build (skipped if populated) → API + chat REPL
+make chat      # index: skip if populated, build if corpus present, else download release → API + chat REPL
 ```
 
 Variants: `make chat CHAT_LANG=en`, `make chat CHAT_CHAIN=persona`,
 `make reindex` (force rebuild), `make eval` (`EVAL_ARGS="--questions q01,q02"`
 to slice), `make test` (pytest + ruff + typecheck), bare `make` lists
 targets. Runner contract: `docs/design-docs/0015-local-runner.md`.
+
+## Own tomes? Rebuild the index from your books
+
+Don't have our 22 volumes (or have different ones)? Place any RU EPUBs in
+`data/raw/` (layout: `docs/data-sources.md`) and run `make reindex` — it
+requires the corpus (`check-corpus` gate) and rebuilds manifest → clean →
+`.chroma/` from scratch (upserts are idempotent, safe to re-run). The eval
+bank scores on work *names*, so a different edition still measures as long
+as work titles match. To publish your rebuild for others, cut a new
+`index-tolstoy-ru-vN` release (contract in `0016`) and point
+`make fetch-index INDEX_TAG=index-tolstoy-ru-vN EXPECTED_CHUNKS=<n>` at it.
 
 Under the hood (fallback if Make is unavailable — same commands the
 targets wrap):

@@ -16,7 +16,7 @@ Numbered proposals and ADRs. Stable product docs live in `docs/` root; everythin
  | 0010 | [Phase 4 — chains zoo](0010-phase-4-chains-zoo.md) | Draft |
  | 0011 | [Phase 5 — quality + eval](0011-phase-5-quality-eval.md) | Draft |
  | 0012 | [Phase 6 — share & extend](0012-phase-6-share-extend.md) | Draft |
- | 0013 | (reserved — lessons-learned note, Phase 6 deliverable per 0012) | Reserved |
+ | 0013 | [Lessons learned — v1 retrospective](0013-lessons-learned.md) | Draft |
  | 0014 | [Deploy compatibility without deploying](0014-deploy-compatibility.md) | Draft |
  | — | (_template — do not index_) | — |
 

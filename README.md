@@ -2,7 +2,9 @@
 
 Self-educational RAG project: a vector database of Leo Tolstoy's works wired to a tiny talkative model, so you can chat with a "cyber Tolstoy" in his vocabulary.
 
-> Status: Phase 1 implemented (22-vol RU corpus ingested, `data/manifest.json` built, 2.43M work words). Build follows `docs/design-docs/0005` → `0012` in order.
+> Status: v1 complete — all phases 0–6 done (5 chains measured, `rerank` wins at
+> 0.55 hit-rate; demo transcripts + lessons note committed). Build followed
+> `docs/design-docs/0005` → `0012` in order.
 
 ## What is this?
 
@@ -28,4 +30,66 @@ Local-first, free, explainable. Every answer should cite the passages it came fr
 
 ## Next step
 
- Read the docs in order above, then build per `docs/design-docs/0005-implementation-plan-overview.md` (Phases 0–1 done — next: Phase 2 baseline retrieval).
+Read the docs in order above, then run the demo below. Full story:
+design docs (`docs/design-docs/`), eval reports (`evals/reports/`), lessons
+(`docs/design-docs/0013-lessons-learned.md`), live status
+(`docs/progress/STATUS.md`).
+
+## Demo (local-first RAG, RU-grounded answers in two languages)
+
+Measured on the 20-question bilingual bank (Phase 5,
+`evals/reports/phase-5-eval.md`): 5 chains × 20 Q × 2 langs, hit = expected
+work in top-4 sources. Winner `rerank` — 0.55 overall (11/20 RU, 11/20 EN),
+EN→RU consistency 0.90, ~4s/query on CPU. `naive`/`persona`/`cite-or-refuse`
+0.47; `multi-query` 0.38 (RRF drift — complexity didn't pay).
+
+RU session (`--lang ru --chain rerank`, verbatim, full text in
+`evals/reports/demo-transcript-ru.md`):
+
+```
+> Что такое искусство?
+Искусство – это архитектура, ваяние, живопись, музыка, поэзия во всех ее видах.
+[1] vol15 | Что такое искусство? | II | ru-vol15-что-такое-искусство-10-3 | 0.8435
+[2] vol15 | Что такое искусство? | V | ru-vol15-что-такое-искусство-13-0 | 0.7819
+```
+
+EN session — same question, same RU sources, translated answer
+(`evals/reports/demo-transcript-en.md`):
+
+```
+> What is art?
+[translated from RU sources]
+Art is entertainment that gives people a break and relaxation. Art provides
+enjoyment for those who are working hard […]
+[1] vol15 | Незаконченное, наброски | О том, что называют искусством | ru-vol15-…-63-7 | 0.8081
+[2] vol15 | Что такое искусство? | II | ru-vol15-что-такое-искусство-10-3 | 0.8332
+```
+
+Out-of-corpus gibberish is refused with no generator call (on the gated
+`cite-or-refuse` chain; `rerank` has no gate by design):
+`Не нашёл ответа на этот вопрос в моих произведениях.` / `(no sources)`.
+Fluent off-topic (e.g. smartphones) can still pass the 0.55 score gate —
+known limit, measured 3/6 probe refusals in Phase 5.
+
+## Quickstart (fresh clone → chat)
+
+Prerequisites: Python 3.11+, Node 18+, Ollama running with
+`ollama pull llama3.2:1b`. The 22-volume RU EPUB corpus is gitignored, not
+cloned — place it at `data/raw/` first (see `docs/data-sources.md`).
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev]" && cp .env.example .env
+.venv/bin/python -m tolstoy.manifest build   # data/manifest.json
+.venv/bin/python -m tolstoy.clean --all          # data/clean/ (regenerable)
+.venv/bin/python -m tolstoy.index build --all # chunk → embed → .chroma/ (26,188 chunks)
+.venv/bin/python -m uvicorn tolstoy.api.app:app --host 127.0.0.1 --port 8000 &
+cd web && npm install && npm run chat -- --lang ru --chain rerank
+```
+
+Commands inside chat: `/ru` `/en` switch language, `/chain <name>` switch
+chain (`naive|persona|cite-or-refuse|rerank|multi-query`), `/quit` leaves.
+Checks: `.venv/bin/python -m pytest` (71 green), `ruff check tolstoy tests`,
+`npm run typecheck --prefix web`. Quickstart path verified against a live
+API + CLI on 2026-09-26 (transcripts above); corpus + index steps are the
+same commands from Phases 0–2 journals.
